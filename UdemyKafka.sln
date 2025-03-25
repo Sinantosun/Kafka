@@ -11,6 +11,12 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kafka.Consumer2", "..\Kafka.Consumer2\Kafka.Consumer2.csproj", "{56C66A8C-805C-42CC-A560-A6651802E1D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kafka.Order.API", "..\Kafka.Order.API\Kafka.Order.API.csproj", "{16DCC5DB-118A-423E-AF31-C31EBC95D1AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kafka.Stock.API", "..\Kafka.Stock.API\Kafka.Stock.API.csproj", "{3F212B9A-46B5-4C7C-B98C-5E7F0AFA6F29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Events", "..\Shared.Events\Shared.Events.csproj", "{3F5C5F06-0E18-4C3F-A1E5-B151024100BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +39,18 @@ Global
 		{56C66A8C-805C-42CC-A560-A6651802E1D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56C66A8C-805C-42CC-A560-A6651802E1D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56C66A8C-805C-42CC-A560-A6651802E1D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16DCC5DB-118A-423E-AF31-C31EBC95D1AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16DCC5DB-118A-423E-AF31-C31EBC95D1AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16DCC5DB-118A-423E-AF31-C31EBC95D1AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16DCC5DB-118A-423E-AF31-C31EBC95D1AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F212B9A-46B5-4C7C-B98C-5E7F0AFA6F29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F212B9A-46B5-4C7C-B98C-5E7F0AFA6F29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F212B9A-46B5-4C7C-B98C-5E7F0AFA6F29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F212B9A-46B5-4C7C-B98C-5E7F0AFA6F29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F5C5F06-0E18-4C3F-A1E5-B151024100BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F5C5F06-0E18-4C3F-A1E5-B151024100BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F5C5F06-0E18-4C3F-A1E5-B151024100BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F5C5F06-0E18-4C3F-A1E5-B151024100BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
