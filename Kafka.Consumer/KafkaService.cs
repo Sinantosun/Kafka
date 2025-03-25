@@ -107,7 +107,7 @@ namespace Kafka.Consumer
             int timer = 5;
             while (true)
             {
-               
+
 
                 var consumeResult = consumer.Consume(5000);
                 if (consumeResult != null)
@@ -131,7 +131,7 @@ namespace Kafka.Consumer
                         await Task.Delay(1000);
                     }
 
-                    Console.WriteLine( );
+                    Console.WriteLine();
                     Console.WriteLine("Veri Bulunamadı");
                 }
                 await Task.Delay(100);
@@ -151,11 +151,11 @@ namespace Kafka.Consumer
             consumer.Subscribe(topicName);
             while (true)
             {
-             
+
 
 
                 var consumeResult = consumer.Consume(5000);
-             
+
                 if (consumeResult != null)
                 {
                     var messageKey = consumeResult.Key;
@@ -195,7 +195,7 @@ namespace Kafka.Consumer
                 if (consumeResult != null)
                 {
                     Console.WriteLine($"Message TimeStamp : {consumeResult.Message.Timestamp.UtcDateTime}");
-                   
+
                 }
                 await Task.Delay(100);
             }
@@ -211,7 +211,7 @@ namespace Kafka.Consumer
                 AutoOffsetReset = AutoOffsetReset.Earliest,
             };
             var consumer = new ConsumerBuilder<Null, string>(config).Build();
-            consumer.Assign(new TopicPartition(topicName,2));
+            consumer.Assign(new TopicPartition(topicName, 2));
             while (true)
             {
                 var consumeResult = consumer.Consume(5000);
@@ -235,7 +235,7 @@ namespace Kafka.Consumer
                 AutoOffsetReset = AutoOffsetReset.Earliest,
             };
             var consumer = new ConsumerBuilder<Null, string>(config).Build();
-            consumer.Assign(new TopicPartitionOffset(topicName, 2,4));
+            consumer.Assign(new TopicPartitionOffset(topicName, 2, 4));
             while (true)
             {
                 var consumeResult = consumer.Consume(5000);
@@ -243,6 +243,58 @@ namespace Kafka.Consumer
                 if (consumeResult != null)
                 {
                     Console.WriteLine($"Message TimeStamp : {consumeResult.Message.Value}");
+
+                }
+                await Task.Delay(100);
+            }
+        }
+
+        internal async Task ConsumMessageWithAck(string topicName)
+        {
+
+            var config = new ConsumerConfig()
+            {
+                BootstrapServers = "localhost:9094",
+                GroupId = "use-case-2-group-3",
+                AutoOffsetReset = AutoOffsetReset.Earliest,
+                EnableAutoCommit = false,
+            };
+            var consumer = new ConsumerBuilder<Null, string>(config).Build();
+            consumer.Subscribe(topicName);
+            while (true)
+            {
+                var consumeResult = consumer.Consume(5000);
+
+                if (consumeResult != null)
+                {
+                    Console.WriteLine($"Message TimeStamp : {consumeResult.Message.Value}");
+                    consumer.Commit(consumeResult);
+
+                }
+                await Task.Delay(100);
+            }
+        }
+
+        internal async Task ConsumMessageFromCluster(string topicName)
+        {
+
+            var config = new ConsumerConfig()
+            {
+                BootstrapServers = "localhost:7000,localhost:7001,localhost:7002",
+                GroupId = "group-x",
+                AutoOffsetReset = AutoOffsetReset.Earliest,
+                EnableAutoCommit = false,
+            };
+            var consumer = new ConsumerBuilder<Null, string>(config).Build();
+            consumer.Subscribe(topicName);
+            while (true)
+            {
+                var consumeResult = consumer.Consume(5000);
+
+                if (consumeResult != null)
+                {
+                    Console.WriteLine($"Message TimeStamp : {consumeResult.Message.Value}");
+                    consumer.Commit(consumeResult);
 
                 }
                 await Task.Delay(100);

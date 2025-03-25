@@ -4,14 +4,14 @@ using Kafka.Producer;
 
 Console.WriteLine("Kafka, Producer! Topic Oluşturuyor!");
 Console.WriteLine("----------------------------------");
-var topicName = "use-case-4-topic";
+var topicName = "my-cluster2-topic";
 
 var kafkaService = new KafkaService();
 
-await kafkaService.CreateTopicAsync(topicName);
+await kafkaService.CreateTopicWithCluster(topicName);
 Console.WriteLine("----------------------------------");
 Console.WriteLine();
-await kafkaService.SendMessageToPartition(topicName);
+await kafkaService.SendMessageWithCluster(topicName);
 
 Console.WriteLine("Mesajlar Gönderilmiştir!");
 
