@@ -18,15 +18,21 @@ namespace Kafka.Producer
 
             try
             {
+                var configs = new Dictionary<string, string>()
+                {
+                    {"message.timestamp.type","LogAppendTime" }
+                };
                 await adminClient.CreateTopicsAsync(new[]
                 {
-            new TopicSpecification()
-            {
-                Name = topicName,
-                NumPartitions = 3,
-                ReplicationFactor = 1
-            }
-            });
+                 new TopicSpecification()
+                 {
+                      Name = topicName,
+                      NumPartitions = 6,
+                      ReplicationFactor = 1,
+                      Configs = configs
+                      
+                 }
+                });
                 Console.WriteLine($"Topic({topicName}) oluşturuldu!");
             }
             catch (Exception e)
@@ -163,6 +169,104 @@ namespace Kafka.Producer
                 }
                 Console.WriteLine("----------------------------------------");
                 await Task.Delay(100);
+            }
+        }
+
+        internal async Task SendComlexMessageWithIntAndKey(string topicName)
+        {
+            var config = new ProducerConfig()
+            {
+                BootstrapServers = "localhost:9094"
+            };
+            using var producer = new ProducerBuilder<MessageKey, OrderCreatedEvent>(config).SetValueSerializer(new CustomValueSerializer<OrderCreatedEvent>()).SetKeySerializer(new CustomKeySerializer<MessageKey>()).Build();
+
+            foreach (var item in Enumerable.Range(1, 10))
+            {
+                var orderCreatedEvent = new OrderCreatedEvent()
+                {
+                    OrderCode = Guid.NewGuid().ToString(),
+                    TotalPrice = item * 200,
+                    UserId = item
+                };
+
+
+                var message = new Message<MessageKey, OrderCreatedEvent>()
+                {
+                    Value = orderCreatedEvent,
+                    Key = new MessageKey("key value 1", "key value 2")
+                };
+
+                var result = await producer.ProduceAsync(topicName, message);
+
+                foreach (var propertyInfo in result.GetType().GetProperties())
+                {
+                    Console.WriteLine($"{propertyInfo.Name} : {propertyInfo.GetValue(result)}");
+                }
+                Console.WriteLine("----------------------------------------");
+                await Task.Delay(100);
+            }
+        }
+
+
+        internal async Task SendComlexMessageWithTimeStamp(string topicName)
+        {
+            var config = new ProducerConfig()
+            {
+                BootstrapServers = "localhost:9094"
+            };
+            using var producer = new ProducerBuilder<MessageKey, OrderCreatedEvent>(config).SetValueSerializer(new CustomValueSerializer<OrderCreatedEvent>()).SetKeySerializer(new CustomKeySerializer<MessageKey>()).Build();
+
+            foreach (var item in Enumerable.Range(1, 10))
+            {
+                var orderCreatedEvent = new OrderCreatedEvent()
+                {
+                    OrderCode = Guid.NewGuid().ToString(),
+                    TotalPrice = item * 200,
+                    UserId = item
+                };
+
+
+                var message = new Message<MessageKey, OrderCreatedEvent>()
+                {
+                    Value = orderCreatedEvent,
+                    Key = new MessageKey("key value 1", "key value 2"),
+                    //Timestamp = new Timestamp(new DateTime(2012,02,02))
+                };
+
+                var result = await producer.ProduceAsync(topicName, message);
+
+                foreach (var propertyInfo in result.GetType().GetProperties())
+                {
+                    Console.WriteLine($"{propertyInfo.Name} : {propertyInfo.GetValue(result)}");
+                }
+                Console.WriteLine("----------------------------------------");
+                await Task.Delay(250);
+            }
+        }
+
+        internal async Task SendMessageToPartition(string topicName)
+        {
+            var config = new ProducerConfig()
+            {
+                BootstrapServers = "localhost:9094"
+            };
+            using var producer = new ProducerBuilder<Null, string>(config).Build();
+
+            foreach (var item in Enumerable.Range(1, 10))
+            {
+                var message = new Message<Null, string>()
+                {
+                    Value = $"Mesaj {item}"
+                };
+                var topicPartiton = new TopicPartition(topicName, new Partition(2));
+                var result = await producer.ProduceAsync(topicPartiton, message);
+
+                foreach (var propertyInfo in result.GetType().GetProperties())
+                {
+                    Console.WriteLine($"{propertyInfo.Name} : {propertyInfo.GetValue(result)}");
+                }
+                Console.WriteLine("----------------------------------------");
+                await Task.Delay(250);
             }
         }
 

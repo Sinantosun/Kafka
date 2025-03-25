@@ -1,6 +1,7 @@
 ﻿using Confluent.Kafka;
 using Kafka.Consumer.Events;
 using System.Text;
+using System.Xml;
 
 namespace Kafka.Consumer
 {
@@ -132,6 +133,117 @@ namespace Kafka.Consumer
 
                     Console.WriteLine( );
                     Console.WriteLine("Veri Bulunamadı");
+                }
+                await Task.Delay(100);
+            }
+        }
+
+        internal async Task ConsumeComlexMessageKeyAndAsync(string topicName)
+        {
+            string message = "Veri Aranıyor";
+            var config = new ConsumerConfig()
+            {
+                BootstrapServers = "localhost:9094",
+                GroupId = "use-case-2-group-1",
+                AutoOffsetReset = AutoOffsetReset.Earliest,
+            };
+            var consumer = new ConsumerBuilder<MessageKey, OrderCreatedEvent>(config).SetValueDeserializer(new CustomValueDeserializer<OrderCreatedEvent>()).SetKeyDeserializer(new CustomKeyDeserializer<MessageKey>()).Build();
+            consumer.Subscribe(topicName);
+            while (true)
+            {
+             
+
+
+                var consumeResult = consumer.Consume(5000);
+             
+                if (consumeResult != null)
+                {
+                    var messageKey = consumeResult.Key;
+                    var orderCreated = consumeResult.Message.Value;
+                    Console.WriteLine($"Gelen Mesaj  Key1 : {messageKey.Key1} Key2 : {messageKey.Key2} OrderCode : " + orderCreated.OrderCode + "  UserId: " + orderCreated.UserId + " TotalPrice: " + orderCreated.TotalPrice);
+                }
+                else
+                {
+                    Console.WriteLine(message);
+                    for (int i = 1; i <= 5; i++)
+                    {
+                        Console.Write(i);
+                        await Task.Delay(1000);
+                    }
+
+                    Console.WriteLine();
+                    Console.WriteLine("Veri Bulunamadı");
+                }
+            }
+        }
+
+        internal async Task ConsumeComlexMessageWithTimeStamp(string topicName)
+        {
+            string message = "Veri Aranıyor";
+            var config = new ConsumerConfig()
+            {
+                BootstrapServers = "localhost:9094",
+                GroupId = "use-case-2-group-1",
+                AutoOffsetReset = AutoOffsetReset.Earliest,
+            };
+            var consumer = new ConsumerBuilder<MessageKey, OrderCreatedEvent>(config).SetValueDeserializer(new CustomValueDeserializer<OrderCreatedEvent>()).SetKeyDeserializer(new CustomKeyDeserializer<MessageKey>()).Build();
+            consumer.Subscribe(topicName);
+            while (true)
+            {
+                var consumeResult = consumer.Consume(5000);
+
+                if (consumeResult != null)
+                {
+                    Console.WriteLine($"Message TimeStamp : {consumeResult.Message.Timestamp.UtcDateTime}");
+                   
+                }
+                await Task.Delay(100);
+            }
+        }
+
+        internal async Task ConsumeToPartition(string topicName)
+        {
+            //beliril partiotion dan okuma.
+            var config = new ConsumerConfig()
+            {
+                BootstrapServers = "localhost:9094",
+                GroupId = "use-case-2-group-1",
+                AutoOffsetReset = AutoOffsetReset.Earliest,
+            };
+            var consumer = new ConsumerBuilder<Null, string>(config).Build();
+            consumer.Assign(new TopicPartition(topicName,2));
+            while (true)
+            {
+                var consumeResult = consumer.Consume(5000);
+
+                if (consumeResult != null)
+                {
+                    Console.WriteLine($"Message TimeStamp : {consumeResult.Message}");
+
+                }
+                await Task.Delay(100);
+            }
+        }
+
+        internal async Task ConsumeToPartitionFromOffset(string topicName)
+        {
+            //beliril partiotion dan okuma.
+            var config = new ConsumerConfig()
+            {
+                BootstrapServers = "localhost:9094",
+                GroupId = "use-case-2-group-3",
+                AutoOffsetReset = AutoOffsetReset.Earliest,
+            };
+            var consumer = new ConsumerBuilder<Null, string>(config).Build();
+            consumer.Assign(new TopicPartitionOffset(topicName, 2,4));
+            while (true)
+            {
+                var consumeResult = consumer.Consume(5000);
+
+                if (consumeResult != null)
+                {
+                    Console.WriteLine($"Message TimeStamp : {consumeResult.Message.Value}");
+
                 }
                 await Task.Delay(100);
             }
